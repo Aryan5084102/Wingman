@@ -5,97 +5,76 @@ import Stack from "@mui/material/Stack";
 
 const Orders = () => {
   const orders = [
-    {
-      id: 1,
-      productName: "Product Name...",
-      date: "24 Apr '2024",
-      time: "10:24 AM",
-      duration: "2h 5m",
-      value: "$120,21",
-      commission: "$55",
-    },
-    {
-      id: 2,
-      productName: "Product Name...",
-      date: "24 Apr '2024",
-      time: "10:24 AM",
-      duration: "2h 5m",
-      value: "$120,21",
-      commission: "$55",
-    },
-    {
-      id: 3,
-      productName: "Product Name...",
-      date: "24 Apr '2024",
-      time: "10:24 AM",
-      duration: "2h 5m",
-      value: "$120,21",
-      commission: "$55",
-    },
-    {
-      id: 4,
-      productName: "Product Name...",
-      date: "24 Apr '2024",
-      time: "10:24 AM",
-      duration: "2h 5m",
-      value: "$120,21",
-      commission: "$55",
-    },
-    {
-      id: 5,
-      productName: "Product Name...",
-      date: "24 Apr '2024",
-      time: "10:24 AM",
-      duration: "2h 5m",
-      value: "$120,21",
-      commission: "$55",
-    },
-    {
-      id: 6,
-      productName: "Product Name...",
-      date: "24 Apr '2024",
-      time: "10:24 AM",
-      duration: "2h 5m",
-      value: "$120,21",
-      commission: "$55",
-    },
+    { id: 1, productName: "Product Name...", date: "24 Apr '2024", time: "10:24 AM", duration: "2h 5m", value: "$120,21", commission: "$55" },
+    { id: 2, productName: "Product Name...", date: "30 Apr '2024", time: "10:24 AM", duration: "2h 5m", value: "$120,21", commission: "$55" },
+    { id: 3, productName: "Product Name...", date: "04 June '2023", time: "10:24 AM", duration: "2h 5m", value: "$120,21", commission: "$55" },
+    { id: 4, productName: "Product Name...", date: "12 Aug '2014", time: "10:24 AM", duration: "2h 5m", value: "$120,21", commission: "$55" },
+    { id: 5, productName: "Product Name...", date: "25 Dec '2022", time: "10:24 AM", duration: "2h 5m", value: "$120,21", commission: "$55" },
+    { id: 6, productName: "Product Name...", date: "30 Nov '2024", time: "10:24 AM", duration: "2h 5m", value: "$120,21", commission: "$55" },
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
   const [activeChat, setActiveChat] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: "date", direction: "ascending", sortLevel: "full" });
+
   const ordersPerPage = 4;
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
-    setActiveChat(null); 
+    setActiveChat(null);
   };
 
   const handleViewChat = (order) => {
     setActiveChat(order);
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setActiveChat(null); 
+    setActiveChat(null);
   };
 
   const handleSendMessage = () => {
     console.log("Message sent!");
-    handleCloseModal(); 
+    handleCloseModal();
   };
+
+  const handleSort = (key, sortLevel) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction, sortLevel });
+  };
+
+  const getDateValue = (date, sortLevel) => {
+    const dateObj = new Date(date);
+    if (sortLevel === "month") return dateObj.getMonth(); // Get Month (0-11)
+    if (sortLevel === "year") return dateObj.getFullYear(); // Get Year
+    return dateObj; // Default is full date
+  };
+
+  const sortedOrders = [...orders].sort((a, b) => {
+    const isAsc = sortConfig.direction === "ascending";
+    const aValue = getDateValue(a[sortConfig.key], sortConfig.sortLevel);
+    const bValue = getDateValue(b[sortConfig.key], sortConfig.sortLevel);
+
+    if (aValue < bValue) return isAsc ? -1 : 1;
+    if (aValue > bValue) return isAsc ? 1 : -1;
+    return 0;
+  });
 
   const lastOrderIndex = currentPage * ordersPerPage;
   const firstOrderIndex = lastOrderIndex - ordersPerPage;
-  const currentOrders = orders.slice(firstOrderIndex, lastOrderIndex);
+  const currentOrders = sortedOrders.slice(firstOrderIndex, lastOrderIndex);
 
   const tableHeaderData = [
-    "Product",
-    "Date",
-    "Time spent",
-    "Order Value",
-    "Commission",
+    { label: "Product", key: "productName" },
+    { label: "Date", key: "date" },
+    { label: "Time spent", key: "duration" },
+    { label: "Order Value", key: "value" },
+    { label: "Commission", key: "commission" },
   ];
 
   return (
@@ -106,12 +85,18 @@ const Orders = () => {
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr className="text-left">
-              {tableHeaderData.map((text) => (
+              {tableHeaderData.map(({ label, key }) => (
                 <th
-                  key={text}
-                  className="px-6 py-3 text-sm font-medium text-gray-500"
+                  key={key}
+                  className="px-6 py-3 text-sm font-medium text-gray-500 cursor-pointer"
+                  onClick={() => handleSort(key, "full")}
                 >
-                  {text}
+                  {label}
+                  {sortConfig.key === key && (
+                    <span className={`ml-2 text-2xl font-black ${sortConfig.direction === "ascending" ? "text-gray-700" : "text-gray-400"}`}>
+                      {sortConfig.direction === "ascending" ? "↑" : "↓"}
+                    </span>
+                  )}
                 </th>
               ))}
             </tr>
@@ -222,4 +207,3 @@ const Orders = () => {
 };
 
 export default Orders;
-
