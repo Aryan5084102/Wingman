@@ -1,4 +1,8 @@
 import React from 'react';
+import { IoTrendingUpOutline } from "react-icons/io5";
+import { IoTrendingDownOutline } from "react-icons/io5";
+import { BiSolidMessageRounded } from "react-icons/bi";
+import { GiNetworkBars } from "react-icons/gi";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,7 +16,6 @@ import {
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 
-// Register necessary components for Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -33,7 +36,7 @@ const Insights = () => {
         data: [30, 35, 40, 50, 45, 42, 48],
         borderColor: '#8B8B8B',
         borderWidth: 2,
-        tension: 0.4, // Smooth curve
+        tension: 0.4, 
         fill: false,
       },
       {
@@ -94,67 +97,52 @@ const Insights = () => {
     <div className="p-6">
       <h1 className="text-4xl font-medium text-gray-800 mb-6">Insights</h1>
       <div className="flex justify-between  items-center md:grid-cols-3 gap-6 ">
-        {/* Consultations Graph */}
         <div className="p-4 bg-white rounded-lg shadow col-span-1 md:col-span-2 h-80">
-          <h2 className="text-lg font-semibold mb-4">Consultations</h2>
+          <div className='text-gray-500 text-sm flex items-center space-x-2 mb-4'>
+            <BiSolidMessageRounded />
+            <h2 className="uppercase font-medium">Consultations</h2>
+          </div>
           <Line data={consultationsData} options={options} />
         </div>
 
-        {/* Comparison Chart */}
         <div className="p-4 bg-white rounded-lg shadow col-span-1 h-80">
-          <h2 className="text-lg font-semibold mb-4">VS Past Period</h2>
+          <div className='text-gray-500 text-sm flex items-center space-x-2 mb-4'>
+            <GiNetworkBars />
+            <h2 className="uppercase font-medium">VS Past Period</h2>
+          </div>
           <Bar data={comparisonData} options={{ responsive: true, maintainAspectRatio: false }} />
         </div>
 
-        {/* Forecast Card */}
-        <div className="p-4 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl shadow-lg h-80 flex flex-col justify-between max-w-xs">
-  {/* Heading */}
-  <h2 className="text-sm uppercase tracking-widest opacity-80">● Forecasts</h2>
-  
-  {/* First Forecast Block */}
-  <div className="flex-1 flex flex-col justify-center">
-    <p className="text-4xl font-bold flex items-center gap-1">
-      +15%
-      <span className="inline-block transform rotate-45">
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12l7-7m0 0l7 7m-7-7v18"></path>
-        </svg>
-      </span>
-    </p>
-    <p className="text-sm opacity-90 text-justify leading-snug">
-      forecasted increase in your sales closed by the end of the current month
-    </p>
-  </div>
+        <div className="p-4 bg-gradient-to-b from-tealLight to-tealDark text-white rounded-2xl shadow-lg h-80 flex flex-col justify-between max-w-xs">
+          <div className='text-white text-sm flex items-center space-x-2 mb-4'>
+            <BiSolidMessageRounded />
+            <h2 className=" uppercase font-medium ">Forecasts</h2>
+          </div>
 
-  {/* Second Forecast Block */}
-  <div className="flex-1 flex flex-col justify-center">
-    <p className="text-4xl font-bold flex items-center gap-1">
-      +20%
-      <span className="inline-block transform rotate-45">
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12l7-7m0 0l7 7m-7-7v18"></path>
-        </svg>
-      </span>
-    </p>
-    <p className="text-sm opacity-90 text-justify leading-snug">
-      forecasted increase in consultations by the end of the current month
-    </p>
-  </div>
-</div>
+          <div className="flex-1 flex flex-col justify-center">
+            <p className="text-4xl font-bold flex items-center gap-1">
+              +15%
+              <span className="">
+                <IoTrendingUpOutline />
+              </span>
+            </p>
+            <p className="text-sm opacity-90 text-justify leading-snug">
+              forecasted increase in your sales closed by the end of the current month
+            </p>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center">
+            <p className="text-4xl font-bold flex items-center gap-1">
+              +20%
+              <span className="">
+                <IoTrendingDownOutline />
+              </span>
+            </p>
+            <p className="text-sm opacity-90 text-justify leading-snug">
+              forecasted increase in consultations by the end of the current month
+            </p>
+          </div>
+        </div>
 
       </div>
     </div>

@@ -44,40 +44,48 @@ const Orders = () => {
     {
       id: 5,
       productName: "Product Name...",
-      date: "25 Apr '2024",
-      time: "11:00 AM",
-      duration: "1h 45m",
-      value: "$150,50",
-      commission: "$60",
+      date: "24 Apr '2024",
+      time: "10:24 AM",
+      duration: "2h 5m",
+      value: "$120,21",
+      commission: "$55",
     },
     {
       id: 6,
       productName: "Product Name...",
-      date: "25 Apr '2024",
-      time: "11:15 AM",
-      duration: "1h 20m",
-      value: "$130,75",
-      commission: "$65",
-    },
-    {
-      id: 7,
-      productName: "Product Name...",
-      date: "25 Apr '2024",
-      time: "11:00 AM",
-      duration: "1h 45m",
-      value: "$150,50",
-      commission: "$60",
+      date: "24 Apr '2024",
+      time: "10:24 AM",
+      duration: "2h 5m",
+      value: "$120,21",
+      commission: "$55",
     },
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeChat, setActiveChat] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const ordersPerPage = 4;
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
+    setActiveChat(null); 
   };
 
-  // Calculate current orders for the selected page
+  const handleViewChat = (order) => {
+    setActiveChat(order);
+    setIsModalOpen(true); 
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setActiveChat(null); 
+  };
+
+  const handleSendMessage = () => {
+    console.log("Message sent!");
+    handleCloseModal(); 
+  };
+
   const lastOrderIndex = currentPage * ordersPerPage;
   const firstOrderIndex = lastOrderIndex - ordersPerPage;
   const currentOrders = orders.slice(firstOrderIndex, lastOrderIndex);
@@ -92,13 +100,10 @@ const Orders = () => {
 
   return (
     <div className="mt-5 p-8">
-      {/* Title */}
       <h2 className="text-4xl font-medium text-gray-800 mb-6">Orders</h2>
 
-      {/* Table */}
       <div className="overflow-hidden border rounded-lg shadow-sm bg-white">
         <table className="w-full divide-y divide-gray-200">
-          {/* Table Head */}
           <thead className="bg-gray-50">
             <tr className="text-left">
               {tableHeaderData.map((text) => (
@@ -112,11 +117,9 @@ const Orders = () => {
             </tr>
           </thead>
 
-          {/* Table Body */}
           <tbody className="divide-y divide-gray-200">
             {currentOrders.map((order) => (
               <tr key={order.id} className="hover:bg-gray-50">
-                {/* Product Column */}
                 <td className="px-6 py-4 whitespace-nowrap flex items-center">
                   <img
                     src="https://www.portronics.com/cdn/shop/files/ortronics_harmoncis_twins_s19_bluetooth_earbuds.jpg?v=1731411470&width=533"
@@ -128,35 +131,33 @@ const Orders = () => {
                   </span>
                 </td>
 
-                {/* Date Column */}
                 <td className="px-6 py-4 whitespace-nowrap text-gray-600">
                   <div>{order.date}</div>
                   <div className="text-sm text-gray-400">{order.time}</div>
                 </td>
 
-                {/* Time Spent Column */}
                 <td className="px-6 py-4 whitespace-nowrap text-gray-800">
                   {order.duration}
                 </td>
 
-                {/* Order Value Column */}
                 <td className="px-6 py-4 whitespace-nowrap text-gray-800">
                   {order.value}
                 </td>
 
-                {/* Commission Column */}
                 <td className="px-6 py-4 whitespace-nowrap text-gray-800 font-semibold">
                   {order.commission}
                 </td>
 
-                {/* Action Column */}
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500 hover:text-indigo-500 text-sm">
-                  <a href="#" className="inline-flex items-center">
+                  <button
+                    onClick={() => handleViewChat(order)}
+                    className="inline-flex items-center"
+                  >
                     View Chat{" "}
                     <span className="ml-1 text-xl">
                       <GoArrowUpRight />
                     </span>
-                  </a>
+                  </button>
                 </td>
               </tr>
             ))}
@@ -164,18 +165,58 @@ const Orders = () => {
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center mt-4">
         <Stack spacing={2}>
           <Pagination
-            count={Math.ceil(orders.length / ordersPerPage)} // Total pages
+            count={Math.ceil(orders.length / ordersPerPage)}
             page={currentPage}
             onChange={handlePageChange}
             variant="outlined"
-            color="primary" 
+            color="primary"
           />
         </Stack>
       </div>
+
+      {isModalOpen && activeChat && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+            <button
+              onClick={handleCloseModal}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+            >
+              &times;
+            </button>
+            <h3 className="text-2xl font-medium text-gray-800 mb-4">
+              Chat for {activeChat.productName}
+            </h3>
+            <p>
+              <strong>Order Date:</strong> {activeChat.date}
+            </p>
+            <p>
+              <strong>Order Time:</strong> {activeChat.time}
+            </p>
+            <p>
+              <strong>Order Value:</strong> {activeChat.value}
+            </p>
+            <p>
+              <strong>Commission:</strong> {activeChat.commission}
+            </p>
+            <div className="mt-4">
+              <textarea
+                className="w-full border rounded p-3"
+                rows="5"
+                placeholder="Type your message here..."
+              ></textarea>
+              <button
+                onClick={handleSendMessage}
+                className="mt-3 px-6 py-2 bg-indigo-500 text-white rounded"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
